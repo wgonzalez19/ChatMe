@@ -20,7 +20,7 @@
                 ExceptionMessage.INVALID_USER_PASSWORD, 
                 System.Net.HttpStatusCode.Unauthorized);
 
-            return new(persistence?.Username, persistence?.Password);
+            return new(persistence.Id, persistence?.Username, persistence?.Password);
         }
     }
 }

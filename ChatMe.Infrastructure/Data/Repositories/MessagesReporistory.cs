@@ -9,7 +9,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     public class MessagesReporistory : IMessagesRepository
@@ -23,23 +22,19 @@
 
         public async Task<Message> Add(Message entity)
         {
+            DomainMessagePersistence entityToAdd = new()
+            {
+                Id = entity.Id,
+                MessageText = entity.MessageText,
+                Timestamp = entity.Timestamp,
+                UserId = entity.User.Id
+            };
+
             var added = await applicationDBContext
                 .Messages
-                .AddAsync(
-                    new DomainMessagePersistence
-                    {
-                        Id = entity.Id,
-                        MessageText = entity.MessageText,
-                        Timestamp = entity.Timestamp,
-                        User = new DomainUserPersistence 
-                        {
-                            Id = entity.User.Id,
-                            Username = entity.User.Username,
-                            Password = entity.User.Password,
-                        },
-                    });
+                .AddAsync(entityToAdd);
 
-            added.Entity.User.Password = null;
+            _ = await applicationDBContext.SaveChangesAsync();
 
             return added.Entity;
         }
@@ -49,16 +44,17 @@
             return (await applicationDBContext.Messages.ToListAsync()).Select(message => (Message)message);
         }
 
-        public async Task<IEnumerable<Message>> GetRange(PageOptions pageOptions, Expression<Func<Message, int>> order)
+        public async Task<IEnumerable<Message>> GetRange(PageOptions pageOptions)
         {
-            return (
-                await applicationDBContext
+            IEnumerable<DomainMessagePersistence> orderedList = await applicationDBContext
                     .Messages
-                    .OrderBy(user => order)
-                    .Skip(pageOptions.Page)
-                    .Take(pageOptions.Size)
-                    .ToListAsync())
-                    .Select(message => (Message)message);
+                    .Include("User")
+                    .OrderByDescending(order => order.Timestamp)
+                    .ToListAsync();
+
+            IEnumerable<DomainMessagePersistence> pagedList = orderedList.Take(pageOptions.Size);
+
+            return pagedList.Select(message => (Message)message);
         }
 
         public async Task<Message> SingleOrDefault(Guid id)

@@ -13,7 +13,7 @@
 
         Task<Message> SingleOrDefault(Guid id);
 
-        Task<IEnumerable<Message>> GetRange(PageOptions pageOptions, Expression<Func<Message, int>> order);
+        Task<IEnumerable<Message>> GetRange(PageOptions pageOptions);
 
         Task<Message> Add(Message entity);
     }

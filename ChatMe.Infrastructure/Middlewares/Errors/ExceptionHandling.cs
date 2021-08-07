@@ -22,6 +22,7 @@
 
             exceptionMapper.Add(typeof(RestException), new Func<Exception, ErrorResponse>(RestException));
             exceptionMapper.Add(typeof(Exception), new Func<Exception, ErrorResponse>(InternalServerError));
+            exceptionMapper.Add(typeof(SystemException), new Func<Exception, ErrorResponse>(InternalServerError));
         }
 
         public async Task InvokeAsync(HttpContext context)

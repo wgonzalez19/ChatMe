@@ -1,10 +1,9 @@
 ﻿namespace ChatMe.Bot.Provider
 {
     using ChatMe.Application.Configuration.Service;
+    using ChatMe.Application.Messages;
     using ChatMe.Application.Messages.Hub;
     using ChatMe.Application.Messages.SendMessage.Events;
-    using ChatMe.Domain.Messages;
-    using ChatMe.Domain.Users;
     using Microsoft.AspNetCore.SignalR;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
@@ -29,41 +28,54 @@
         {
             ConnectionFactory factory = new() { HostName = configuration["Rabbit:host"] };
 
-            using IConnection connection = factory.CreateConnection();
-            using IModel channel = connection.CreateModel();
+            using (IConnection connection = factory.CreateConnection())
+            using (IModel channel = connection.CreateModel())
+            {
 
-            channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
+                channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
 
-            string messageToBot = JsonConvert.SerializeObject(message);
+                string messageToBot = JsonConvert.SerializeObject(message);
 
-            Byte[] body = Encoding.UTF8.GetBytes(messageToBot);
+                Byte[] body = Encoding.UTF8.GetBytes(messageToBot);
 
-            channel.BasicPublish(
-                exchange: string.Empty, 
-                routingKey: configuration["Rabbit:output"], 
-                basicProperties: null, 
-                body: body);
+                IBasicProperties properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
+
+                channel.BasicPublish(
+                    exchange: string.Empty,
+                    routingKey: configuration["Rabbit:output"],
+                    basicProperties: properties,
+                    body: body);
+            }
         }
 
         public async Task ReceiveMessage(string message)
         {
             ConnectionFactory factory = new() { HostName = configuration["Rabbit:host"] };
 
-            using IConnection connection = factory.CreateConnection();
-            using IModel channel = connection.CreateModel();
-
-            channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
-
-            EventingBasicConsumer consumer = new(channel);
-
-            consumer.Received += async (model, eventArguments) =>
+            using (IConnection connection = factory.CreateConnection())
+            using (IModel channel = connection.CreateModel())
             {
-                Byte[] body = eventArguments.Body.ToArray();
+                channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
 
-                string message = Encoding.UTF8.GetString(body);
+                EventingBasicConsumer consumer = new(channel);
 
-                await hub.Clients.All.InformClient(new Message(message, new User("Bot")));
-            };
+                consumer.Received += async (model, eventArguments) =>
+                {
+                    Byte[] body = eventArguments.Body.ToArray();
+
+                    string message = Encoding.UTF8.GetString(body);
+
+                    await hub.Clients.All.InformClient(
+                        new MessageDto()
+                        {
+                            MessageText = message,
+                            From = "Bot",
+                            Timestamp = DateTime.Now,
+                            Id = Guid.NewGuid().ToString(),
+                        });
+                };
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace ChatMe.Application.Messages.SendMessage.Events
 {
     using MediatR;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     public class BotMessage : INotification
@@ -14,8 +15,8 @@
         public BotMessage(string messageText)
         {
             MatchCollection matches = botCommand.Matches(messageText);
-            this.Bot = matches[botPosition].Value;
-            this.Command = matches[commandPosition].Value;
+            this.Bot = matches.First().Groups[botPosition].Value;
+            this.Command = matches.First().Groups[commandPosition].Value;
         }
 
         public string Bot { get; private set; }

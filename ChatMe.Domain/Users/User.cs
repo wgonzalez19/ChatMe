@@ -10,7 +10,7 @@
 
         public User(Username username)
         {
-            Id = Guid.NewGuid();
+            this.Id = Guid.NewGuid();
             this.username = username;
         }
 
@@ -20,12 +20,24 @@
             this.password = password;
         }
 
-        public Guid Id { get; }
+        public User(Guid id, Username username, Password password)
+        {
+            this.SetId(id);
+            this.username = username;
+            this.password = password;
+        }
+
+        public Guid Id { get; private set; }
 
         public string Username => username.Value;
 
         public string Password => password.Value;
 
         public bool ValidatePassword(Password passwordToValidate) => this.Password == passwordToValidate.Value;
+
+        private void SetId(Guid id)
+        {
+            this.Id = id;
+        }
     }
 }

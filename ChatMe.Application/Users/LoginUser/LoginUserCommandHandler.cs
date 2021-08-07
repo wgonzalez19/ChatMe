@@ -1,7 +1,7 @@
 ﻿namespace ChatMe.Application.Users.LoginUser
 {
     using ChatMe.Application.Configuration.Commands;
-    using ChatMe.Application.Configuration.Persistence;
+    using ChatMe.Application.Configuration.Persistence.Repositories;
     using ChatMe.Application.Configuration.Service;
     using ChatMe.Domain.Exceptions;
     using ChatMe.Domain.Users;
@@ -12,12 +12,12 @@
 
     public class LoginUserCommandHandler : ICommandHandler<LoginUserCommand, TokenDto>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUsersRepository usersRepository;
         private readonly ITokenService tokenService;
 
-        public LoginUserCommandHandler(IUnitOfWork unitOfWork, ITokenService tokenService)
+        public LoginUserCommandHandler(IUsersRepository usersRepository, ITokenService tokenService)
         {
-            this.unitOfWork = unitOfWork;
+            this.usersRepository = usersRepository;
             this.tokenService = tokenService;
         }
 
@@ -30,7 +30,7 @@
 
             User userToLogin = new(request.Username, request.Password);
 
-            User registerUser = await this.unitOfWork.UsersRepository.SingleOrDefault(request.Username);
+            User registerUser = await this.usersRepository.SingleOrDefault(request.Username);
 
             Throw.When<RestException>(
                 registerUser is null,

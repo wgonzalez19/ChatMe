@@ -20,7 +20,15 @@
             this.User = user;
         }
 
-        public Guid Id { get; }
+        public Message(Guid id, MessageText messageText, User user)
+        {
+            this.SetId(id);
+            this.messageText = messageText;
+            this.User = user;
+            this.Timestamp = DateTime.Now;
+        }
+
+        public Guid Id { get; private set; }
 
         public string MessageText => messageText.Value;
 
@@ -29,5 +37,10 @@
         public User User { get; private set; }
 
         public string From => User.Username;
+
+        private void SetId(Guid id)
+        {
+            this.Id = id;
+        }
     }
 }

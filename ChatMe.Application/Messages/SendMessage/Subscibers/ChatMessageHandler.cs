@@ -1,6 +1,6 @@
 ﻿namespace ChatMe.Application.Messages.SendMessage.Subscibers
 {
-    using ChatMe.Application.Configuration.Persistence;
+    using ChatMe.Application.Configuration.Persistence.Repositories;
     using ChatMe.Application.Messages.Hub;
     using ChatMe.Application.Messages.SendMessage.Events;
     using ChatMe.Domain.Exceptions;
@@ -16,18 +16,20 @@
 
     public class ChatMessageHandler : INotificationHandler<ChatMessage>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IMessagesRepository messagesRepository;
+        private readonly IUsersRepository usersRepository;
         private readonly IHubContext<ChatHub, IChatHub> hub;
 
-        public ChatMessageHandler(IUnitOfWork unitOfWork, IHubContext<ChatHub, IChatHub> hub)
+        public ChatMessageHandler(IMessagesRepository messagesRepository, IUsersRepository usersRepository, IHubContext<ChatHub, IChatHub> hub)
         {
-            this.unitOfWork = unitOfWork;
+            this.messagesRepository = messagesRepository;
+            this.usersRepository = usersRepository;
             this.hub = hub;
         }
 
         public async Task Handle(ChatMessage notification, CancellationToken cancellationToken)
         {
-            User user = await this.unitOfWork.UsersRepository.SingleOrDefault(notification.Username);
+            User user = await this.usersRepository.SingleOrDefault(notification.Username);
 
             Throw.When<RestException>(
                 user is null,
@@ -37,11 +39,11 @@
 
             var messagePosted = new Message(notification.MessageText, user);
 
-            var savedMessage = await this.unitOfWork.MessagesRepository.Add(messagePosted);
+            var savedMessage = await this.messagesRepository.Add(messagePosted);
 
             Throw.When<Exception>(savedMessage is null, ExceptionMessage.SAVE_MESSAGE_FAILED);
 
-            await hub.Clients.All.InformClient(savedMessage);
+            await hub.Clients.All.InformClient(MessageDto.MapFromDomain(savedMessage));
         }
     }
 }

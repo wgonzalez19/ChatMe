@@ -4,14 +4,16 @@ using ChatMe.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChatMe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210807181711_NewConfigChanges")]
+    partial class NewConfigChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,8 +40,6 @@ namespace ChatMe.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Messages");
                 });
@@ -79,17 +79,6 @@ namespace ChatMe.Infrastructure.Migrations
                             Password = "10edaa2ccab4a337894a84fae672038702658567",
                             Username = "Test"
                         });
-                });
-
-            modelBuilder.Entity("ChatMe.Infrastructure.Data.Configurations.DomainMessagePersistence", b =>
-                {
-                    b.HasOne("ChatMe.Infrastructure.Data.Configurations.DomainUserPersistence", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

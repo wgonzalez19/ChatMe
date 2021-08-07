@@ -1,30 +1,20 @@
 namespace ChatMe.Api
 {
     using ChatMe.Application.Configuration.Commands;
-    using ChatMe.Application.Configuration.Service;
     using ChatMe.Application.Messages.Hub;
     using ChatMe.Infrastructure.Data;
     using ChatMe.Infrastructure.Middlewares.Errors;
     using ChatMe.Infrastructure.Shared;
-    using MediatR;
-    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.HttpsPolicy;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
-    using Microsoft.Identity.Web;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
 
     public class Startup
     {
@@ -71,10 +61,32 @@ namespace ChatMe.Api
                         .AllowCredentials();
                 });
             });
-            
-            services.AddSwaggerGen(c =>
+
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ChatMe.Api", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "ChatMe.Api", Version = "v1" });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+                });
             });
         }
 

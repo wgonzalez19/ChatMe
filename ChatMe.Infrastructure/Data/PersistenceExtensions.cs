@@ -1,7 +1,9 @@
 ﻿namespace ChatMe.Infrastructure.Data
 {
     using ChatMe.Application.Configuration.Persistence;
+    using ChatMe.Application.Configuration.Persistence.Repositories;
     using ChatMe.Infrastructure.Data.Context;
+    using ChatMe.Infrastructure.Data.Repositories;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +16,8 @@
                 options.UseSqlServer(configuration.GetConnectionString("default"))
             );
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IMessagesRepository, MessagesReporistory>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
 
             return services;
         }

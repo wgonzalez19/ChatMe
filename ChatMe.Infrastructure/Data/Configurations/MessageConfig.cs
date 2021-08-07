@@ -1,6 +1,5 @@
 ﻿namespace ChatMe.Infrastructure.Data.Configurations
 {
-    using ChatMe.Domain.Messages;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,16 +11,17 @@
 
             builder.HasKey(nameof(DomainMessagePersistence.Id));
 
-            builder.Property(prop => prop.MessageText)
+            builder.Property(message => message.MessageText)
                 .HasMaxLength(178)
                 .IsRequired();
 
-            builder.Property(prop => prop.Timestamp)
+            builder.Property(message => message.Timestamp)
                 .IsRequired();
 
             builder.Navigation(nameof(DomainMessagePersistence.User))
-                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .UsePropertyAccessMode(PropertyAccessMode.Property)
                 .AutoInclude();
+
         }
     }
 }

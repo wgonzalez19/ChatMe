@@ -37,7 +37,6 @@
             return await applicationDBContext
                 .Set<TEntity>()
                 .OrderBy(order)
-                .Skip(pageOptions.Page)
                 .Take(pageOptions.Size)
                 .ToListAsync();
         }

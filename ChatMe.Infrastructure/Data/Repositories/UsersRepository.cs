@@ -47,7 +47,6 @@
                 await applicationDBContext
                     .Users
                     .OrderBy(user => order)
-                    .Skip(pageOptions.Page)
                     .Take(pageOptions.Size)
                     .ToListAsync())
                     .Select(user => (User)user);

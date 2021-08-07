@@ -1,6 +1,7 @@
 ﻿namespace ChatMe.Infrastructure.Data.Configurations
 {
     using ChatMe.Domain.Messages;
+    using ChatMe.Domain.Users;
     using System;
 
     public class DomainMessagePersistence
@@ -13,7 +14,13 @@
 
         public DomainUserPersistence User { get; set; }
 
-        public static implicit operator Message(DomainMessagePersistence persistence) =>
-            new(persistence.MessageText, persistence.User);
+        public Guid UserId { get; set; }
+
+        public static implicit operator Message(DomainMessagePersistence persistence)
+        {
+            User domainUser = new(persistence.Id, persistence.User.Username, persistence.User.Password);
+
+            return new(persistence.MessageText, domainUser);
+        }
     }
 }

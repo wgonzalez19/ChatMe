@@ -12,7 +12,7 @@
     {
         private readonly IMediator mediator;
 
-        private Dictionary<MessageType, Action<SendMessageCommand>> messageHandlers = new();
+        private Dictionary<MessageType, Func<SendMessageCommand, Task>> messageHandlers = new();
 
         public SendMessageCommandHandler(IMediator mediator)
         {
@@ -24,17 +24,17 @@
 
         public async Task<Unit> Handle(SendMessageCommand request, CancellationToken cancellationToken)
         {
-            this.messageHandlers[request.Type](request);
+            await this.messageHandlers[request.Type](request);
 
             return new Unit();
         }
 
-        private async void ChatMessageHandler(SendMessageCommand request)
+        private async Task ChatMessageHandler(SendMessageCommand request)
         {
             await this.mediator.Publish(new ChatMessage(request.MessageText, request.Username));
         } 
 
-        private async void BotMessageHandler(SendMessageCommand request)
+        private async Task BotMessageHandler(SendMessageCommand request)
         {
             await this.mediator.Publish(new BotMessage(request.MessageText));
         }
