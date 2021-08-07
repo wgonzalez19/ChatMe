@@ -1,9 +1,12 @@
-﻿using ChatMe.Domain.Messages;
-
-namespace ChatMe.Application.Configuration.Service
+﻿namespace ChatMe.Application.Configuration.Service
 {
+    using ChatMe.Application.Messages.SendMessage.Events;
+    using System.Threading.Tasks;
+
     public interface IBot
     {
-        void PostMessage(Message message);
+        Task PostMessage(BotMessage message);
+
+        Task ReceiveMessage(string message);
     }
 }

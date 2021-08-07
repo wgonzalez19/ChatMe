@@ -79,6 +79,15 @@ namespace ChatMe.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid bot message..
+        /// </summary>
+        public static string INVALID_BOT_MESSAGE {
+            get {
+                return ResourceManager.GetString("INVALID_BOT_MESSAGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password must have at least 8 chars long, an Uppercase letter and a number..
         /// </summary>
         public static string INVALID_PASSWORD_RESTRICTION {
@@ -93,6 +102,24 @@ namespace ChatMe.Resources {
         public static string INVALID_USER_PASSWORD {
             get {
                 return ResourceManager.GetString("INVALID_USER_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not save the message..
+        /// </summary>
+        public static string SAVE_MESSAGE_FAILED {
+            get {
+                return ResourceManager.GetString("SAVE_MESSAGE_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not found an user..
+        /// </summary>
+        public static string USER_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("USER_NOT_FOUND", resourceCulture);
             }
         }
     }

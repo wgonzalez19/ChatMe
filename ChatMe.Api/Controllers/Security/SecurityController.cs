@@ -21,6 +21,7 @@
         /// </summary>
         [HttpPost]
         [Route("login")]
+        [ProducesResponseType(typeof(TokenDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> LoginUser([FromBody]LoginUserRequest request)
         {
             var response = await mediator.Send(new LoginUserCommand(request.Username, request.Password));

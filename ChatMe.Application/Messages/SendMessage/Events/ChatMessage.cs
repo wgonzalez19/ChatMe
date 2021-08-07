@@ -7,7 +7,7 @@
         public ChatMessage(string messageText, string username)
         {
             this.MessageText = messageText;
-            this.Username = messageText;
+            this.Username = username;
         }
 
         public string MessageText { get; set; }

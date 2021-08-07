@@ -23,6 +23,11 @@
 
         public async Task<TokenDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
+            Throw.When<RestException>(
+                string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password),
+                ExceptionMessage.INVALID_USER_PASSWORD,
+                HttpStatusCode.BadRequest);
+
             User userToLogin = new(request.Username, request.Password);
 
             User registerUser = await this.unitOfWork.UsersRepository.SingleOrDefault(request.Username);

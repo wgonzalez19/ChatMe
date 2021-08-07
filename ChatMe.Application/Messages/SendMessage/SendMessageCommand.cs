@@ -11,7 +11,7 @@
         
         public SendMessageCommand(string messageText, string username)
         {
-            typeMapper.Add(slashChar, MessageType.StockBot);
+            typeMapper.Add(slashChar, MessageType.Bot);
             typeMapper.Add(string.Empty, MessageType.Chat);
 
             this.MessageText = messageText;

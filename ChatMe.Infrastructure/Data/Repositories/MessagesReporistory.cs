@@ -39,6 +39,8 @@
                         },
                     });
 
+            added.Entity.User.Password = null;
+
             return added.Entity;
         }
 

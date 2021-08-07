@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatMe.Resources", "ChatMe.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMe.JWT.TokenProvider", "ChatMe.JWT.TokenProvider\ChatMe.JWT.TokenProvider.csproj", "{2007AD57-04E2-4011-9B6D-5FA6349F2B82}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatMe.Bot.Provider", "ChatMe.Bot.Provider\ChatMe.Bot.Provider.csproj", "{F8531C3F-4ABF-4762-A325-C174620BCE3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,12 +49,17 @@ Global
 		{2007AD57-04E2-4011-9B6D-5FA6349F2B82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2007AD57-04E2-4011-9B6D-5FA6349F2B82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2007AD57-04E2-4011-9B6D-5FA6349F2B82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8531C3F-4ABF-4762-A325-C174620BCE3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8531C3F-4ABF-4762-A325-C174620BCE3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8531C3F-4ABF-4762-A325-C174620BCE3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8531C3F-4ABF-4762-A325-C174620BCE3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2007AD57-04E2-4011-9B6D-5FA6349F2B82} = {F5A58147-2BD8-41F8-A341-543C1E4A4505}
+		{F8531C3F-4ABF-4762-A325-C174620BCE3D} = {F5A58147-2BD8-41F8-A341-543C1E4A4505}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33807FF1-F7C9-4502-9B23-D9C6F53AFC80}

@@ -2,6 +2,7 @@ namespace ChatMe.Api
 {
     using ChatMe.Application.Configuration.Commands;
     using ChatMe.Application.Configuration.Service;
+    using ChatMe.Application.Messages.Hub;
     using ChatMe.Infrastructure.Data;
     using ChatMe.Infrastructure.Middlewares.Errors;
     using ChatMe.JWT.TokenProvider;
@@ -56,6 +57,19 @@ namespace ChatMe.Api
             services.AddTransient<ITokenService, TokenService>();
 
             services.ConfigureMediator();
+
+            services.AddSignalR();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ClientPermission", policy =>
+                {
+                    policy.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .WithOrigins(Configuration["Cors:Origin"])
+                        .AllowCredentials();
+                });
+            });
             
             services.AddSwaggerGen(c =>
             {
@@ -85,6 +99,7 @@ namespace ChatMe.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/hubs/chat");
             });
         }
     }
