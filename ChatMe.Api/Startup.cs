@@ -5,7 +5,7 @@ namespace ChatMe.Api
     using ChatMe.Application.Messages.Hub;
     using ChatMe.Infrastructure.Data;
     using ChatMe.Infrastructure.Middlewares.Errors;
-    using ChatMe.JWT.TokenProvider;
+    using ChatMe.Infrastructure.Shared;
     using MediatR;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,7 +54,8 @@ namespace ChatMe.Api
             });
 
             services.ConfigurePersistenceService(Configuration);
-            services.AddTransient<ITokenService, TokenService>();
+
+            services.ConfigureApplicationServices();
 
             services.ConfigureMediator();
 

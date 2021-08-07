@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChatMe.Infrastructure\ChatMe.Infrastructure.csproj" />
-    <ProjectReference Include="..\ChatMe.JWT.TokenProvider\ChatMe.JWT.TokenProvider.csproj" />
   </ItemGroup>
 
 </Project>

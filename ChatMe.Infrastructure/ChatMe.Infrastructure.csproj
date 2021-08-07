@@ -13,7 +13,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ChatMe.Application\ChatMe.Application.csproj" />
+    <ProjectReference Include="..\ChatMe.Bot.Provider\ChatMe.Bot.Provider.csproj" />
     <ProjectReference Include="..\ChatMe.Domain\ChatMe.Domain.csproj" />
+    <ProjectReference Include="..\ChatMe.JWT.TokenProvider\ChatMe.JWT.TokenProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>
