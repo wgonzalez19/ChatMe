@@ -46,7 +46,7 @@
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
-        public bool ValidateToken(string token)
+        public SecurityToken ValidateToken(string token)
         {
             Byte[] secret = Encoding.UTF8.GetBytes(Key);
             SymmetricSecurityKey securityKey = new(secret);
@@ -61,17 +61,9 @@
                 IssuerSigningKey = securityKey,
             };
 
-            try
-            {
-                tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
-            }
-            catch
-            {
+            tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
 
-                return false;
-            }
-
-            return true;
+            return validatedToken;
         }
     }
 }

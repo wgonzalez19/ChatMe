@@ -4,6 +4,7 @@ namespace ChatMe.Api
     using ChatMe.Application.Messages.Hub;
     using ChatMe.Infrastructure.Data;
     using ChatMe.Infrastructure.Middlewares.Errors;
+    using ChatMe.Infrastructure.Middlewares.Security;
     using ChatMe.Infrastructure.Shared;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
@@ -108,6 +109,8 @@ namespace ChatMe.Api
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

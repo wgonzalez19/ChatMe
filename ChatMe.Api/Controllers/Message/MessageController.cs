@@ -4,6 +4,7 @@
     using ChatMe.Application.Messages;
     using ChatMe.Application.Messages.GetMessages;
     using ChatMe.Application.Messages.SendMessage;
+    using ChatMe.Application.Users;
     using MediatR;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,9 @@
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<IActionResult> PostMessage([FromBody]SendMessageRequest request)
         {
-            await mediator.Send(new SendMessageCommand(request.MessageText, request.Username));
+            UserDto user = (UserDto)HttpContext.Items[nameof(User)];
+
+            await mediator.Send(new SendMessageCommand(request.MessageText, user.Username));
 
             return NoContent();
         }

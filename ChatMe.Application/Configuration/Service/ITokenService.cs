@@ -1,6 +1,7 @@
 ﻿namespace ChatMe.Application.Configuration.Service
 {
     using ChatMe.Application.Users;
+    using Microsoft.IdentityModel.Tokens;
 
     public interface ITokenService
     {
@@ -12,6 +13,6 @@
 
         string BuildToken(UserDto user);
 
-        bool ValidateToken(string token);
+        SecurityToken ValidateToken(string token);
     }
 }

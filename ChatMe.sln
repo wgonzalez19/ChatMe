@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatMe.Bot.Provider", "Chat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatMeApplication", "ChatMeApplication", "{4E0391EA-BCF9-4B6C-9D93-E7491DB1D5A1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatMeBot", "ChatMeBot", "{F44507B5-7A40-468D-85BF-610B061E3D81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
