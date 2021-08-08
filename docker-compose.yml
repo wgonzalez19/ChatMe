@@ -1,11 +1,13 @@
 version: '3.4'
 services:
-  mssql:
+  chatmedb:
     image: mcr.microsoft.com/mssql/server
     container_name: 'chatmedb'
     environment: 
       SA_PASSWORD: "Saintsa123*"
       ACCEPT_EULA: "Y"
+    ports: 
+      - 1433:1433
     networks: 
       - chatme-net
   rabbitmq:
@@ -20,7 +22,7 @@ services:
     image: wgonzalez89/chatme_api
     container_name: 'chatme-api'
     depends_on: 
-      - "mssql"
+      - "chatmedb"
       - "rabbitmq"
     build: 
       context: .
