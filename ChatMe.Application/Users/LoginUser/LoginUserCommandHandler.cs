@@ -24,7 +24,7 @@
         public async Task<TokenDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
             Throw.When<RestException>(
-                string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password),
+                string.IsNullOrEmpty(request?.Username) || string.IsNullOrEmpty(request?.Password),
                 ExceptionMessage.INVALID_USER_PASSWORD,
                 HttpStatusCode.BadRequest);
 
