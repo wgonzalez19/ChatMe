@@ -6,7 +6,5 @@
     public interface IBot
     {
         Task PostMessage(BotMessage message);
-
-        Task ReceiveMessage(string message);
     }
 }

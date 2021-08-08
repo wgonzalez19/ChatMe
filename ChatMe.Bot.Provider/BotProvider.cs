@@ -1,30 +1,71 @@
 ﻿namespace ChatMe.Bot.Provider
 {
     using ChatMe.Application.Configuration.Service;
-    using ChatMe.Application.Messages;
-    using ChatMe.Application.Messages.Hub;
     using ChatMe.Application.Messages.SendMessage.Events;
-    using Microsoft.AspNetCore.SignalR;
+    using ChatMe.Bot.Provider.Models;
+    using ChatMe.Domain.Exceptions;
+    using CsvHelper;
+    using CsvHelper.Configuration;
     using Microsoft.Extensions.Configuration;
-    using Newtonsoft.Json;
     using RabbitMQ.Client;
-    using RabbitMQ.Client.Events;
     using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
 
     public class BotProvider : IBot
     {
+        private const string queryParams = "f=sd2t2ohlcv&h&e=csv&s=";
         private readonly IConfiguration configuration;
-        private readonly IHubContext<ChatHub, IChatHub> hub;
 
-        public BotProvider(IConfiguration configuration, IHubContext<ChatHub, IChatHub> hub)
+        public BotProvider(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.hub = hub;
         }
 
         public async Task PostMessage(BotMessage message)
+        {
+            string url = $"{configuration["Stock:url"]}?{queryParams}{message.Command}";
+
+            string stockResponse = await SendRequest(url);
+
+            await QueueMessage(MapMessage(stockResponse));
+        }
+
+        private async Task<string> SendRequest(string url)
+        {
+            HttpClient client = new();
+
+            var response = await client.GetStringAsync(url);
+            
+            return response;
+        }
+
+        private string MapMessage(string response)
+        {
+            var textReader = new StringReader(response);
+
+            CsvConfiguration csvConfiguration = new(cultureInfo: CultureInfo.InvariantCulture);
+            CsvReader csvReader = new(textReader, csvConfiguration);
+
+            IEnumerable<BotResponse> records = csvReader.GetRecords<BotResponse>();
+
+            BotResponse stockResponse = records.FirstOrDefault();
+
+            Throw.When<RestException>(
+                stockResponse is null, 
+                string.Empty, 
+                HttpStatusCode.NotFound);
+
+            return $"{stockResponse.Symbol} quote is ${stockResponse.Open} per share";
+        }
+
+        private async Task QueueMessage(string message)
         {
             ConnectionFactory factory = new() { HostName = configuration["Rabbit:host"] };
 
@@ -34,9 +75,7 @@
 
                 channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
 
-                string messageToBot = JsonConvert.SerializeObject(message);
-
-                Byte[] body = Encoding.UTF8.GetBytes(messageToBot);
+                Byte[] body = Encoding.UTF8.GetBytes(message);
 
                 IBasicProperties properties = channel.CreateBasicProperties();
                 properties.Persistent = true;
@@ -46,35 +85,6 @@
                     routingKey: configuration["Rabbit:output"],
                     basicProperties: properties,
                     body: body);
-            }
-        }
-
-        public async Task ReceiveMessage(string message)
-        {
-            ConnectionFactory factory = new() { HostName = configuration["Rabbit:host"] };
-
-            using (IConnection connection = factory.CreateConnection())
-            using (IModel channel = connection.CreateModel())
-            {
-                channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
-
-                EventingBasicConsumer consumer = new(channel);
-
-                consumer.Received += async (model, eventArguments) =>
-                {
-                    Byte[] body = eventArguments.Body.ToArray();
-
-                    string message = Encoding.UTF8.GetString(body);
-
-                    await hub.Clients.All.InformClient(
-                        new MessageDto()
-                        {
-                            MessageText = message,
-                            From = "Bot",
-                            Timestamp = DateTime.Now,
-                            Id = Guid.NewGuid().ToString(),
-                        });
-                };
             }
         }
     }

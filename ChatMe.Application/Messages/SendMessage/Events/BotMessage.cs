@@ -1,7 +1,9 @@
 ﻿namespace ChatMe.Application.Messages.SendMessage.Events
 {
+    using ChatMe.Domain.Exceptions;
     using MediatR;
     using System.Linq;
+    using System.Net;
     using System.Text.RegularExpressions;
 
     public class BotMessage : INotification
@@ -15,6 +17,12 @@
         public BotMessage(string messageText)
         {
             MatchCollection matches = botCommand.Matches(messageText);
+
+            Throw.When<RestException>(
+                matches is null, 
+                string.Empty, 
+                HttpStatusCode.BadRequest);
+
             this.Bot = matches.First().Groups[botPosition].Value;
             this.Command = matches.First().Groups[commandPosition].Value;
         }
