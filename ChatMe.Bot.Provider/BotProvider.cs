@@ -21,7 +21,7 @@
 
     public class BotProvider : IBot
     {
-        private const string queryParams = "f=sd2t2ohlcv&h&e=csv&s=";
+        private const string queryParams = "f=sd2t2ohlcv&h&e=csv";
         private readonly IConfiguration configuration;
 
         public BotProvider(IConfiguration configuration)
@@ -31,7 +31,7 @@
 
         public async Task PostMessage(BotMessage message)
         {
-            string url = $"{configuration["Stock:url"]}?{queryParams}{message.Command}";
+            string url = $"{configuration["Stock:url"]}?s={message.Command}&{queryParams}";
 
             string stockResponse = await SendRequest(url);
 
@@ -59,13 +59,13 @@
             CsvConfiguration csvConfiguration = new(cultureInfo: CultureInfo.InvariantCulture);
             CsvReader csvReader = new(textReader, csvConfiguration);
 
-            IEnumerable<BotResponse> records = csvReader.GetRecords<BotResponse>();
+            List<BotResponse> records = csvReader.GetRecords<BotResponse>().ToList();
 
             BotResponse stockResponse = records.FirstOrDefault();
 
             Throw.When<RestException>(
-                stockResponse is null, 
-                ExceptionMessage.STOCK_NOT_FOUND, 
+                stockResponse is null,
+                ExceptionMessage.STOCK_NOT_FOUND,
                 HttpStatusCode.NotFound);
 
             return $"{stockResponse.Symbol} quote is ${stockResponse.Open} per share";

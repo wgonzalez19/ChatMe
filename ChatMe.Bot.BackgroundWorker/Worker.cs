@@ -22,11 +22,13 @@ namespace ChatMe.Bot.BackgroundWorker
 
         public Worker(
             ILogger<Worker> logger, 
-            IOptions<BrokerConfiguration> brokerConfiguration
+            IOptions<BrokerConfiguration> brokerConfiguration,
+            IHubContext<ChatHub, IChatHub> hub
         )
         {
             _logger = logger;
             this.brokerConfiguration = brokerConfiguration.Value;
+            this.hub = hub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
