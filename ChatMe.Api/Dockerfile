@@ -1,0 +1,30 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["ChatMe.Api/ChatMe.Api.csproj", "ChatMe.Api/"]
+COPY ["ChatMe.Infrastructure/ChatMe.Infrastructure.csproj", "ChatMe.Infrastructure/"]
+COPY ["ChatMe.Application/ChatMe.Application.csproj", "ChatMe.Application/"]
+COPY ["ChatMe.Domain/ChatMe.Domain.csproj", "ChatMe.Domain/"]
+COPY ["ChatMe.Resources/ChatMe.Resources.csproj", "ChatMe.Resources/"]
+COPY ["ChatMe.JWT.TokenProvider/ChatMe.JWT.TokenProvider.csproj", "ChatMe.JWT.TokenProvider/"]
+COPY ["ChatMe.Bot.Provider/ChatMe.Bot.Provider.csproj", "ChatMe.Bot.Provider/"]
+RUN dotnet restore "ChatMe.Api/ChatMe.Api.csproj"
+COPY . .
+WORKDIR "/src/ChatMe.Api"
+RUN dotnet build "ChatMe.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "ChatMe.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ChatMe.Api.dll"]
+
+ENV ASPNETCORE_URLS http://+:4040
+EXPOSE 4040

@@ -1,0 +1,48 @@
+version: '3.4'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server
+    container_name: 'chatmedb'
+    environment: 
+      SA_PASSWORD: "Saintsa123*"
+      ACCEPT_EULA: "Y"
+    networks: 
+      - chatme-net
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    container_name: 'rabbitmq'
+    ports: 
+      - 5672:5672
+      - 15672:15672
+    networks: 
+      - chatme-net
+  chatme-api:
+    image: wgonzalez89/chatme_api
+    container_name: 'chatme-api'
+    depends_on: 
+      - "mssql"
+      - "rabbitmq"
+    build: 
+      context: .
+      dockerfile: Dockerfile.api
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports: 
+      - "4040:4040"
+    networks: 
+      - chatme-net
+  chatme-worker:
+    image: wgonzalez89/chatme_worker
+    container_name: 'chatme-worker'
+    depends_on: 
+      - "rabbitmq"
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks: 
+      - chatme-net
+networks:
+  chatme-net:
+    driver: bridge
