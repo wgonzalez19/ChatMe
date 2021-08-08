@@ -3,12 +3,14 @@ namespace ChatMe.Api
     using ChatMe.Application.Configuration.Commands;
     using ChatMe.Application.Messages.Hub;
     using ChatMe.Infrastructure.Data;
+    using ChatMe.Infrastructure.Data.Context;
     using ChatMe.Infrastructure.Middlewares.Errors;
     using ChatMe.Infrastructure.Middlewares.Security;
     using ChatMe.Infrastructure.Shared;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -92,16 +94,14 @@ namespace ChatMe.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDBContext applicationDBContext)
         {
+            applicationDBContext.Database.Migrate();
+
             app.UseMiddleware<ExceptionHandling>();
 
-            if (env.IsDevelopment())
-            {
-                //app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ChatMe.Api v1"));
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ChatMe.Api v1"));
 
             app.UseHttpsRedirection();
 
