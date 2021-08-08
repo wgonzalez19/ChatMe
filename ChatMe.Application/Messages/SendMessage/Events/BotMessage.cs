@@ -1,6 +1,7 @@
 ﻿namespace ChatMe.Application.Messages.SendMessage.Events
 {
     using ChatMe.Domain.Exceptions;
+    using ChatMe.Resources;
     using MediatR;
     using System.Linq;
     using System.Net;
@@ -20,7 +21,7 @@
 
             Throw.When<RestException>(
                 matches is null, 
-                string.Empty, 
+                ExceptionMessage.INVALID_BOT_COMMAND, 
                 HttpStatusCode.BadRequest);
 
             this.Bot = matches.First().Groups[botPosition].Value;

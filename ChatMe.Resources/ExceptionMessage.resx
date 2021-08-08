@@ -123,6 +123,9 @@
   <data name="EXCEEDS_MAX_LENGTH" xml:space="preserve">
     <value>Argument length is too long. Max length is {0}.</value>
   </data>
+  <data name="INVALID_BOT_COMMAND" xml:space="preserve">
+    <value>Invalid bot command sended.</value>
+  </data>
   <data name="INVALID_BOT_MESSAGE" xml:space="preserve">
     <value>Invalid bot message.</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="SAVE_MESSAGE_FAILED" xml:space="preserve">
     <value>Could not save the message.</value>
+  </data>
+  <data name="STOCK_NOT_FOUND" xml:space="preserve">
+    <value>Could not found stock information.</value>
   </data>
   <data name="USER_NOT_FOUND" xml:space="preserve">
     <value>Could not found an user.</value>

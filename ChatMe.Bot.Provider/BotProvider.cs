@@ -4,6 +4,7 @@
     using ChatMe.Application.Messages.SendMessage.Events;
     using ChatMe.Bot.Provider.Models;
     using ChatMe.Domain.Exceptions;
+    using ChatMe.Resources;
     using CsvHelper;
     using CsvHelper.Configuration;
     using Microsoft.Extensions.Configuration;
@@ -34,6 +35,11 @@
 
             string stockResponse = await SendRequest(url);
 
+            Throw.When<RestException>(
+                string.IsNullOrEmpty(stockResponse),
+                ExceptionMessage.STOCK_NOT_FOUND,
+                HttpStatusCode.BadRequest);
+
             await QueueMessage(MapMessage(stockResponse));
         }
 
@@ -41,7 +47,7 @@
         {
             HttpClient client = new();
 
-            var response = await client.GetStringAsync(url);
+            string response = await client.GetStringAsync(url);
             
             return response;
         }
@@ -59,7 +65,7 @@
 
             Throw.When<RestException>(
                 stockResponse is null, 
-                string.Empty, 
+                ExceptionMessage.STOCK_NOT_FOUND, 
                 HttpStatusCode.NotFound);
 
             return $"{stockResponse.Symbol} quote is ${stockResponse.Open} per share";
@@ -72,7 +78,6 @@
             using (IConnection connection = factory.CreateConnection())
             using (IModel channel = connection.CreateModel())
             {
-
                 channel.QueueDeclare(queue: configuration["Rabbit:output"], durable: false, exclusive: false, arguments: null);
 
                 Byte[] body = Encoding.UTF8.GetBytes(message);

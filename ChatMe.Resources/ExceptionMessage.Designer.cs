@@ -79,6 +79,15 @@ namespace ChatMe.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid bot command sended..
+        /// </summary>
+        public static string INVALID_BOT_COMMAND {
+            get {
+                return ResourceManager.GetString("INVALID_BOT_COMMAND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid bot message..
         /// </summary>
         public static string INVALID_BOT_MESSAGE {
@@ -111,6 +120,15 @@ namespace ChatMe.Resources {
         public static string SAVE_MESSAGE_FAILED {
             get {
                 return ResourceManager.GetString("SAVE_MESSAGE_FAILED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not found stock information..
+        /// </summary>
+        public static string STOCK_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("STOCK_NOT_FOUND", resourceCulture);
             }
         }
         
