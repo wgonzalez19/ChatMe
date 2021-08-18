@@ -44,6 +44,11 @@ _Or click here_
 
 * [SwaggerUI](http://localhost:4000/swagger)
 
+_You will need to login to test it_
+
+* User: Will
+* Password: ClaveSegura1
+
 ## Build using 🛠️
 
 _This is my attemp to implement CQRS Pattern with MediatR, real time endpoints using SignalR and a message broker for bot commands responses with RabbitMQ_
